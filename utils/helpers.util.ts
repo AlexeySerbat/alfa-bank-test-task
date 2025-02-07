@@ -7,11 +7,7 @@ export class HelpersUtils {
     this.page = page;
   }
 
-  async waitForAttributeState(
-    selector: string,
-    attribute: string,
-    state: boolean
-  ) {
+  async waitForAttributeState(selector: string, attribute: string, state: boolean) {
     await this.page.waitForFunction((selector) => {
       const element = document.querySelector(selector);
       return element && element.getAttribute(attribute) === `${state}`;
@@ -27,5 +23,9 @@ export class HelpersUtils {
     for (const char of text) {
       await locator.type(char, { delay });
     }
+  }
+
+  async getElementByTextXpath(text: string) {
+    return `//*[contains(text(), "${text}")]`;
   }
 }

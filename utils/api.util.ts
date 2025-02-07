@@ -1,15 +1,23 @@
+import axios, { AxiosResponse } from 'axios';
+
 export class APIUtil {
-  async interceptRequest(page, url, method, response) {
-    await page.route(url, (route) => {
-      if (route.request().method() === method) {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(response),
-        });
+  async sendPostRequest(url: string, data: any, headers?: Record<string, string>): Promise<AxiosResponse> {
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+      });
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Ошибка при отправке POST-запроса:', error.message);
+        throw error;
       } else {
-        route.continue();
+        console.error('Неизвестная ошибка:', error);
+        throw error;
       }
-    });
+    }
   }
 }

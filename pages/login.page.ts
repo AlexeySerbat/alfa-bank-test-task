@@ -17,33 +17,33 @@ export class LoginPage {
     this.rememberMeCheckbox = page.locator('#id="loginform-rememberme"');
   }
 
-  async enterEmail(email: string) {
+  async enterEmail(email: string): Promise<void> {
     const helpers = new HelpersUtils(this.page);
     await helpers.fillWithDelay(this.emailInput, email);
   }
 
-  async enterPassword(password: string) {
+  async enterPassword(password: string): Promise<void> {
     const helpers = new HelpersUtils(this.page);
     await helpers.fillWithDelay(this.passwordInput, password);
   }
 
-  async clickLoginButton() {
+  async clickLoginButton(): Promise<void> {
     await this.loginButton.click();
   }
 
-  async checkRememberMe() {
+  async checkRememberMe(): Promise<void> {
     await this.rememberMeCheckbox.check();
   }
 
-  async verifyUserIsLoggedIn(username: string) {
+  async verifyUserIsLoggedIn(username: string): Promise<void> {
     const mainPage = new MainPage(this.page);
     const helpers = new HelpersUtils(this.page);
-    await helpers.waitForLocatorToBeVisible(mainPage.username);
-    await expect(mainPage.userDropdown).toBeVisible();
-    await expect(mainPage.username).toHaveText(username);
+    await helpers.waitForLocatorToBeVisible(this.page.locator(mainPage.username));
+    await expect(this.page.locator(mainPage.userDropdown)).toBeVisible();
+    await expect(this.page.locator(mainPage.username)).toHaveText(username);
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<void> {
     await this.enterEmail(email);
     await this.enterPassword(password);
     await this.clickLoginButton();
