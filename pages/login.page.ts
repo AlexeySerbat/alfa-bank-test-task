@@ -1,47 +1,51 @@
-import { Locator, Page, expect } from "@playwright/test";
-import { MainPage } from "./main.page";
-
+import { Locator, Page, expect } from '@playwright/test';
+import { MainPage } from './main.page';
+import { HelpersUtils } from '../utils/helpers.util';
 
 export class LoginPage {
-    private page: Page;
-    private emailInput: Locator;
-    private passwordInput: Locator;
-    private loginButton: Locator;
-    private rememberMeCheckbox: Locator;
+  private page: Page;
+  private emailInput: Locator;
+  private passwordInput: Locator;
+  private loginButton: Locator;
+  private rememberMeCheckbox: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.emailInput = page.locator('#loginform-username');
-        this.passwordInput = page.locator('#loginform-password');
-        this.loginButton = page.locator('[name="login-button"]');
-        this.rememberMeCheckbox = page.locator('#id="loginform-rememberme"');
-    }
+  constructor(page: Page) {
+    this.page = page;
+    this.emailInput = page.locator('#loginform-username');
+    this.passwordInput = page.locator('#loginform-password');
+    this.loginButton = page.locator('[name="login-button"]');
+    this.rememberMeCheckbox = page.locator('#id="loginform-rememberme"');
+  }
 
-    async enterEmail(email: string) {
-        await this.emailInput.fill(email);
-    }
+  async enterEmail(email: string): Promise<void> {
+    const helpers = new HelpersUtils(this.page);
+    await helpers.fillWithDelay(this.emailInput, email);
+  }
 
-    async enterPassword(password: string) {
-        await this.passwordInput.fill(password);
-    }
+  async enterPassword(password: string): Promise<void> {
+    const helpers = new HelpersUtils(this.page);
+    await helpers.fillWithDelay(this.passwordInput, password);
+  }
 
-    async clickLoginButton() {
-        await this.loginButton.click();
-    }
-    
-    async checkRememberMe() {
-        await this.rememberMeCheckbox.check();
-    }
+  async clickLoginButton(): Promise<void> {
+    await this.loginButton.click();
+  }
 
-    async verifyUserIsLoggedIn(username: string) {
-        const mainPage = new MainPage(this.page);
-        await expect(mainPage.userDropdown).toBeVisible();
-        await expect(mainPage.username).toHaveText(username.toUpperCase());
-    }
+  async checkRememberMe(): Promise<void> {
+    await this.rememberMeCheckbox.check();
+  }
 
-    async login(email: string, password: string) {
-        await this.enterEmail(email);
-        await this.enterPassword(password);
-        await this.clickLoginButton();
-    }
+  async verifyUserIsLoggedIn(username: string): Promise<void> {
+    const mainPage = new MainPage(this.page);
+    const helpers = new HelpersUtils(this.page);
+    await helpers.waitForLocatorToBeVisible(this.page.locator(mainPage.username));
+    await expect(this.page.locator(mainPage.userDropdown)).toBeVisible();
+    await expect(this.page.locator(mainPage.username)).toHaveText(username);
+  }
+
+  async login(email: string, password: string): Promise<void> {
+    await this.enterEmail(email);
+    await this.enterPassword(password);
+    await this.clickLoginButton();
+  }
 }

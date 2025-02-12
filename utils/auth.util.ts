@@ -1,3 +1,1 @@
-class AuthorizationUtils {
-    
-}
+export class AuthorizationUtils {}
